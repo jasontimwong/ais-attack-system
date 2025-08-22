@@ -1,0 +1,266 @@
+# Default AIS Attack System Configuration
+# This file contains the default settings for all attack types and system components
+
+# System Configuration
+system:
+  version: "1.0.0"
+  log_level: "INFO"
+  output_format: "geojson"
+  coordinate_system: "WGS84"
+  time_zone: "UTC"
+
+# Physics Engine Configuration
+physics:
+  # Ship dynamics constraints (IMO standards)
+  max_turn_rate: 3.0  # degrees per second
+  max_acceleration: 0.5  # knots per minute
+  min_cpa_threshold: 0.1  # nautical miles
+  
+  # Vessel type specific constraints
+  vessel_constraints:
+    cargo:
+      max_speed: 25.0  # knots
+      min_speed: 2.0
+      length: 200.0  # meters
+      beam: 30.0
+    tanker:
+      max_speed: 20.0
+      min_speed: 3.0
+      length: 300.0
+      beam: 50.0
+    container:
+      max_speed: 28.0
+      min_speed: 2.0
+      length: 400.0
+      beam: 60.0
+    passenger:
+      max_speed: 30.0
+      min_speed: 5.0
+      length: 150.0
+      beam: 25.0
+
+# COLREGs Configuration
+colregs:
+  enabled: true
+  rules_enforced: [8, 13, 14, 15, 16, 17]
+  
+  # Rule-specific parameters
+  rule_8:  # Action to avoid collision
+    safe_passing_distance: 0.5  # nautical miles
+    early_action_threshold: 5.0  # minutes
+  
+  rule_13:  # Overtaking
+    overtaking_angle: 22.5  # degrees
+    safe_overtaking_distance: 1.0  # nautical miles
+  
+  rule_14:  # Head-on situation
+    head_on_angle_range: [175, 185]  # degrees
+    avoidance_turn: 30.0  # degrees to starboard
+  
+  rule_15:  # Crossing situation
+    crossing_angle_range: [5, 175]  # degrees
+    give_way_distance: 2.0  # nautical miles
+
+# Target Selection Configuration
+target_selection:
+  algorithm: "mcda_fuzzy"
+  
+  # MCDA weights (must sum to 1.0)
+  weights:
+    isolation_factor: 0.3
+    predictability_score: 0.25
+    target_value: 0.25
+    cascade_potential: 0.2
+  
+  # Fuzzy logic parameters
+  fuzzy_sets:
+    isolation:
+      low: [0, 0, 0.3]
+      medium: [0.2, 0.5, 0.8]
+      high: [0.7, 1.0, 1.0]
+    
+    predictability:
+      low: [0, 0, 0.4]
+      medium: [0.3, 0.6, 0.9]
+      high: [0.8, 1.0, 1.0]
+
+# Attack Type Configurations
+attacks:
+  # S1: Flash Cross Attack
+  s1_flash_cross:
+    enabled: true
+    stages:
+      parallel_following:
+        duration: 120.0  # seconds
+        parallel_distance: 2.0  # nautical miles
+        speed_factor: 0.95
+      
+      approach_initiation:
+        duration: 30.0
+        target_distance: 1.0
+        speed_increase: 0.2
+      
+      flash_cross_maneuver:
+        duration: 45.0
+        cross_angle: 90.0
+        speed_factor: 1.5
+        min_cpa: 0.3
+      
+      silent_disappearance:
+        duration: 30.0
+        fade_distance: 5.0
+  
+  # S2: Zone Violation Attack
+  s2_zone_violation:
+    enabled: true
+    violation_distance: 0.5  # nautical miles into restricted zone
+    spoofing_accuracy: 0.1  # position error in nautical miles
+    duration: 300.0  # seconds
+  
+  # S3: Ghost Swarm Attack
+  s3_ghost_swarm:
+    enabled: true
+    swarm_size: 8
+    formation_pattern: "v_formation"
+    coordination_distance: 0.5
+    swarm_speed_factor: 1.2
+  
+  # S4: Position Offset Attack
+  s4_position_offset:
+    enabled: true
+    offset_distance: 1.5  # nautical miles
+    offset_direction: "random"  # or specific angle
+    duration: 600.0
+  
+  # S5: Port Spoofing Attack
+  s5_port_spoofing:
+    enabled: true
+    port_radius: 5.0  # nautical miles
+    false_traffic_density: 0.3
+    spoofing_duration: 900.0
+  
+  # S6: Course Disruption Attack
+  s6_course_disruption:
+    enabled: true
+    disruption_angle: 45.0  # degrees
+    force_maneuver_distance: 1.0
+    recovery_time: 180.0
+  
+  # S7: Identity Swap Attack
+  s7_identity_swap:
+    enabled: true
+    swap_duration: 300.0
+    identity_fade_time: 60.0
+  
+  # S8: Identity Clone Attack
+  s8_identity_clone:
+    enabled: true
+    clone_offset: 0.1  # nautical miles
+    clone_duration: 600.0
+  
+  # S9: Identity Whitewashing Attack
+  s9_identity_whitewashing:
+    enabled: true
+    reputation_build_time: 1800.0  # 30 minutes
+    clean_identity_duration: 3600.0  # 1 hour
+
+# Visualization Configuration
+visualization:
+  # ECDIS settings
+  ecdis:
+    chart_style: "imo_standard"
+    symbol_size: "medium"
+    color_scheme: "maritime"
+    grid_enabled: true
+    depth_contours: true
+  
+  # Web interface settings
+  web:
+    map_provider: "maplibre"
+    base_layer: "openstreetmap"
+    animation_speed: 1.0  # 1x real-time
+    trajectory_width: 3
+    attack_highlight_color: "#ff0000"
+  
+  # Export settings
+  export:
+    image_format: "png"
+    image_dpi: 300
+    video_fps: 30
+    include_metadata: true
+
+# Data Processing Configuration
+data:
+  # Input data settings
+  input:
+    ais_message_types: [1, 2, 3, 4, 5, 18, 19]
+    time_window: 3600  # seconds
+    spatial_bounds:
+      min_lat: -90.0
+      max_lat: 90.0
+      min_lon: -180.0
+      max_lon: 180.0
+  
+  # Quality control
+  quality:
+    max_speed_threshold: 50.0  # knots
+    min_message_interval: 2.0  # seconds
+    position_accuracy_threshold: 10.0  # meters
+    remove_outliers: true
+  
+  # Output settings
+  output:
+    precision: 6  # decimal places for coordinates
+    include_raw_data: false
+    compression: "gzip"
+
+# Performance Configuration
+performance:
+  # Processing limits
+  max_vessels_per_scenario: 100
+  max_trajectory_points: 10000
+  parallel_processing: true
+  thread_count: 4
+  
+  # Memory management
+  chunk_size: 1000
+  cache_size: 100  # MB
+  garbage_collection_interval: 300  # seconds
+
+# Validation Configuration
+validation:
+  # Attack validation
+  attack_validation:
+    enabled: true
+    physics_check: true
+    colregs_check: true
+    temporal_consistency: true
+  
+  # Data validation
+  data_validation:
+    check_duplicates: true
+    validate_coordinates: true
+    check_temporal_order: true
+    remove_invalid_records: true
+  
+  # Quality thresholds
+  quality_thresholds:
+    min_physical_consistency: 0.95
+    max_colregs_violations: 0.05
+    min_attack_success_rate: 0.85
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_output: true
+  console_output: true
+  max_file_size: "10MB"
+  backup_count: 5
+  
+  # Component-specific logging
+  loggers:
+    core.attack_orchestrator: "DEBUG"
+    attacks: "INFO"
+    visualization: "WARNING"
+    validation: "INFO"

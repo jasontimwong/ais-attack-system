@@ -1,0 +1,257 @@
+version: '3.8'
+
+services:
+  # Main AIS Attack System
+  ais-attack-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: ais-attack-system
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./configs:/app/configs:ro
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - OUTPUT_DIR=/app/output
+    restart: unless-stopped
+    networks:
+      - ais-network
+    healthcheck:
+      test: ["CMD", "python", "tools/system_check.py", "--quiet"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Web Visualization Interface
+  web-interface:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: full-system
+    container_name: ais-web-interface
+    ports:
+      - "5173:5173"
+      - "3000:3000"
+    volumes:
+      - ./output:/app/output:ro
+      - ./visualization/web_interface/src:/app/visualization/web_interface/src
+    environment:
+      - NODE_ENV=production
+      - VITE_API_BASE_URL=http://ais-attack-system:8000
+    depends_on:
+      - ais-attack-system
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Database for storing results (optional)
+  postgres:
+    image: postgres:13-alpine
+    container_name: ais-postgres
+    environment:
+      - POSTGRES_DB=ais_attacks
+      - POSTGRES_USER=aisuser
+      - POSTGRES_PASSWORD=aispassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - ais-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aisuser -d ais_attacks"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and job queue (optional)
+  redis:
+    image: redis:6-alpine
+    container_name: ais-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - ais-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Batch Processing Worker
+  batch-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: ais-batch-worker
+    volumes:
+      - ./data:/app/data:ro
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./configs:/app/configs:ro
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - WORKER_MODE=true
+      - REDIS_URL=redis://redis:6379/0
+    command: ["python", "tools/batch_runner/worker.py"]
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    networks:
+      - ais-network
+    deploy:
+      replicas: 2
+
+  # Monitoring and Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ais-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Metrics Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ais-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Log Aggregation
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    container_name: ais-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Log Processing
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    container_name: ais-logstash
+    volumes:
+      - ./monitoring/logstash/config:/usr/share/logstash/config:ro
+      - ./logs:/app/logs:ro
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Log Visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    container_name: ais-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - ais-network
+
+  # Development Environment
+  dev-environment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ais-dev
+    ports:
+      - "8001:8000"
+      - "5174:5173"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=DEBUG
+      - DEVELOPMENT_MODE=true
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    networks:
+      - ais-network
+    profiles:
+      - development
+
+  # Testing Environment
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ais-test-runner
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=DEBUG
+    command: ["pytest", "tests/", "-v", "--cov=core", "--cov=attacks"]
+    networks:
+      - ais-network
+    profiles:
+      - testing
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:
+
+networks:
+  ais-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
