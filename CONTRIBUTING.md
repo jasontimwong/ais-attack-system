@@ -1,52 +1,52 @@
 # 🤝 Contributing to AIS Attack System
 
-感谢您对AIS攻击生成系统的贡献兴趣！本项目旨在推进海事网络安全研究，我们欢迎来自学术界和工业界的贡献。
+Thank you for your interest in contributing to the AIS Attack Generation System! This project aims to advance maritime cybersecurity research, and we welcome contributions from both academia and industry.
 
-## 📋 目录
+## 📋 Table of Contents
 
-- [贡献类型](#贡献类型)
-- [开发环境设置](#开发环境设置)
-- [代码贡献流程](#代码贡献流程)
-- [编码规范](#编码规范)
-- [测试要求](#测试要求)
-- [文档贡献](#文档贡献)
-- [问题报告](#问题报告)
-- [社区准则](#社区准则)
+- [Types of Contributions](#types-of-contributions)
+- [Development Environment Setup](#development-environment-setup)
+- [Code Contribution Process](#code-contribution-process)
+- [Coding Standards](#coding-standards)
+- [Testing Requirements](#testing-requirements)
+- [Documentation Contributions](#documentation-contributions)
+- [Issue Reporting](#issue-reporting)
+- [Community Guidelines](#community-guidelines)
 
-## 🎯 贡献类型
+## 🎯 Types of Contributions
 
-我们欢迎以下类型的贡献：
+We welcome the following types of contributions:
 
-### 🔧 代码贡献
-- **新攻击类型实现** - 添加新的AIS攻击模式
-- **算法改进** - 优化现有的目标选择、物理引擎等算法
-- **性能优化** - 提升系统处理速度和内存效率
-- **可视化增强** - 改进ECDIS渲染和Web界面
-- **集成功能** - 添加与其他海事系统的集成
+### 🔧 Code Contributions
+- **New Attack Type Implementations** - Add new AIS attack patterns
+- **Algorithm Improvements** - Optimize existing target selection, physics engine, etc.
+- **Performance Optimizations** - Improve system processing speed and memory efficiency
+- **Visualization Enhancements** - Improve ECDIS rendering and Web interface
+- **Integration Features** - Add integration with other maritime systems
 
-### 📊 数据贡献
-- **新测试数据集** - 提供真实AIS数据用于验证
-- **攻击场景配置** - 创建新的攻击场景配置
-- **基准测试数据** - 提供性能基准测试数据
+### 📊 Data Contributions
+- **New Test Datasets** - Provide real AIS data for validation
+- **Attack Scenario Configurations** - Create new attack scenario configurations
+- **Benchmark Test Data** - Provide performance benchmark test data
 
-### 📖 文档贡献
-- **API文档** - 改进代码文档和API说明
-- **教程和指南** - 编写使用教程和最佳实践
-- **学术论文** - 基于系统的研究成果
-- **翻译** - 将文档翻译为其他语言
+### 📖 Documentation Contributions
+- **API Documentation** - Improve code documentation and API descriptions
+- **Tutorials and Guides** - Write usage tutorials and best practices
+- **Academic Papers** - Research results based on the system
+- **Translations** - Translate documentation to other languages
 
-### 🐛 问题报告
-- **Bug报告** - 发现和报告系统缺陷
-- **性能问题** - 报告性能瓶颈
-- **兼容性问题** - 报告平台兼容性问题
+### 🐛 Issue Reporting
+- **Bug Reports** - Discover and report system defects
+- **Performance Issues** - Report performance bottlenecks
+- **Compatibility Issues** - Report platform compatibility problems
 
-## 🛠️ 开发环境设置
+## 🛠️ Development Environment Setup
 
-### 1. Fork 仓库
+### 1. Fork Repository
 
-点击GitHub页面右上角的"Fork"按钮创建您的分支。
+Click the "Fork" button in the top right corner of the GitHub page to create your branch.
 
-### 2. 克隆代码
+### 2. Clone Code
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/ais-attack-system.git
@@ -54,76 +54,76 @@ cd ais-attack-system
 git remote add upstream https://github.com/jasontimwong/ais-attack-system.git
 ```
 
-### 3. 设置开发环境
+### 3. Setup Development Environment
 
 ```bash
-# 创建虚拟环境
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/macOS
 # venv\Scripts\activate  # Windows
 
-# 安装开发依赖
+# Install development dependencies
 pip install -r requirements.txt
 pip install -e .[dev]
 
-# 安装pre-commit hooks
+# Install pre-commit hooks
 pre-commit install
 ```
 
-### 4. 验证环境
+### 4. Verify Environment
 
 ```bash
-# 运行测试套件
+# Run test suite
 pytest
 
-# 运行代码检查
+# Run code checks
 flake8 core/ attacks/ visualization/
 black --check core/ attacks/ visualization/
 mypy core/
 
-# 运行系统检查
+# Run system check
 python tools/system_check.py
 ```
 
-## 🔄 代码贡献流程
+## 🔄 Code Contribution Process
 
-### 1. 创建功能分支
+### 1. Create Feature Branch
 
 ```bash
 git checkout -b feature/your-feature-name
-# 或
+# or
 git checkout -b bugfix/issue-number-description
 ```
 
-分支命名规范：
-- `feature/` - 新功能
-- `bugfix/` - Bug修复
-- `docs/` - 文档更新
-- `refactor/` - 代码重构
-- `perf/` - 性能优化
+Branch naming conventions:
+- `feature/` - New features
+- `bugfix/` - Bug fixes
+- `docs/` - Documentation updates
+- `refactor/` - Code refactoring
+- `perf/` - Performance optimizations
 
-### 2. 开发和测试
+### 2. Development and Testing
 
 ```bash
-# 进行开发...
+# Perform development...
 
-# 运行测试
+# Run tests
 pytest tests/
 
-# 运行特定测试
+# Run specific tests
 pytest tests/test_attack_orchestrator.py -v
 
-# 检查代码覆盖率
+# Check code coverage
 pytest --cov=core --cov=attacks --cov-report=html
 ```
 
-### 3. 提交代码
+### 3. Commit Code
 
 ```bash
-# 添加文件
+# Add files
 git add .
 
-# 提交（遵循commit message规范）
+# Commit (follow commit message conventions)
 git commit -m "feat: add new ghost swarm attack pattern
 
 - Implement coordinated 8-vessel attack formation
@@ -134,9 +134,9 @@ git commit -m "feat: add new ghost swarm attack pattern
 Closes #123"
 ```
 
-#### Commit Message 规范
+#### Commit Message Conventions
 
-使用 [Conventional Commits](https://www.conventionalcommits.org/) 格式：
+Use [Conventional Commits](https://www.conventionalcommits.org/) format:
 
 ```
 <type>[optional scope]: <description>
@@ -146,57 +146,57 @@ Closes #123"
 [optional footer(s)]
 ```
 
-类型包括：
-- `feat` - 新功能
-- `fix` - Bug修复
-- `docs` - 文档更新
-- `style` - 代码格式（不影响功能）
-- `refactor` - 代码重构
-- `perf` - 性能优化
-- `test` - 测试相关
-- `chore` - 构建工具、依赖等
+Types include:
+- `feat` - New features
+- `fix` - Bug fixes
+- `docs` - Documentation updates
+- `style` - Code formatting (no functional impact)
+- `refactor` - Code refactoring
+- `perf` - Performance optimizations
+- `test` - Test related
+- `chore` - Build tools, dependencies, etc.
 
-### 4. 推送和创建Pull Request
+### 4. Push and Create Pull Request
 
 ```bash
-# 推送到您的fork
+# Push to your fork
 git push origin feature/your-feature-name
 ```
 
-在GitHub上创建Pull Request，包含：
-- **清晰的标题和描述**
-- **相关issue的链接**
-- **变更内容的详细说明**
-- **测试结果截图**（如适用）
-- **Breaking changes说明**（如有）
+Create a Pull Request on GitHub, including:
+- **Clear title and description**
+- **Links to related issues**
+- **Detailed explanation of changes**
+- **Test result screenshots** (if applicable)
+- **Breaking changes description** (if any)
 
-## 📝 编码规范
+## 📝 Coding Standards
 
-### Python代码规范
+### Python Code Standards
 
-我们使用以下工具确保代码质量：
+We use the following tools to ensure code quality:
 
 ```bash
-# 代码格式化
+# Code formatting
 black core/ attacks/ visualization/
 
-# 导入排序
+# Import sorting
 isort core/ attacks/ visualization/
 
-# 代码检查
+# Code checking
 flake8 core/ attacks/ visualization/
 
-# 类型检查
+# Type checking
 mypy core/
 ```
 
-#### 代码风格要求
+#### Code Style Requirements
 
 ```python
 """
-模块级文档字符串
+Module-level docstring
 
-详细描述模块的功能和用途。
+Detailed description of module functionality and purpose.
 """
 
 import os
@@ -253,9 +253,9 @@ class FlashCrossAttack(BaseAttack):
             raise RuntimeError(f"Attack execution failed: {e}") from e
 ```
 
-### 文档字符串规范
+### Docstring Standards
 
-使用Google风格的文档字符串：
+Use Google-style docstrings:
 
 ```python
 def calculate_cpa(vessel_a: Dict, vessel_b: Dict) -> float:
@@ -284,18 +284,18 @@ def calculate_cpa(vessel_a: Dict, vessel_b: Dict) -> float:
     """
 ```
 
-## 🧪 测试要求
+## 🧪 Testing Requirements
 
-### 测试覆盖率要求
+### Test Coverage Requirements
 
-- **核心模块**: 最低90%覆盖率
-- **攻击模块**: 最低85%覆盖率
-- **可视化模块**: 最低75%覆盖率
-- **工具模块**: 最低70%覆盖率
+- **Core modules**: Minimum 90% coverage
+- **Attack modules**: Minimum 85% coverage
+- **Visualization modules**: Minimum 75% coverage
+- **Tool modules**: Minimum 70% coverage
 
-### 测试类型
+### Test Types
 
-#### 1. 单元测试
+#### 1. Unit Tests
 
 ```python
 # tests/test_attack_orchestrator.py
@@ -340,7 +340,7 @@ class TestAttackOrchestrator:
         )
 ```
 
-#### 2. 集成测试
+#### 2. Integration Tests
 
 ```python
 # tests/integration/test_flash_cross_integration.py
@@ -373,7 +373,7 @@ class TestFlashCrossIntegration:
         assert results['metrics']['attack_effectiveness'] > 0.8
 ```
 
-#### 3. 性能测试
+#### 3. Performance Tests
 
 ```python
 # tests/performance/test_batch_performance.py
@@ -411,157 +411,157 @@ class TestBatchPerformance:
         assert memory_mb < 1000  # Should use less than 1GB
 ```
 
-### 运行测试
+### Running Tests
 
 ```bash
-# 运行所有测试
+# Run all tests
 pytest
 
-# 运行特定类型的测试
+# Run specific test types
 pytest tests/unit/
 pytest tests/integration/
 pytest -m performance
 
-# 生成覆盖率报告
+# Generate coverage report
 pytest --cov=core --cov=attacks --cov-report=html
 open htmlcov/index.html
 
-# 运行性能测试
+# Run performance tests
 pytest -m performance --benchmark-only
 ```
 
-## 📚 文档贡献
+## 📚 Documentation Contributions
 
-### 文档结构
+### Documentation Structure
 
 ```
 docs/
-├── api/                 # API参考文档
-├── tutorials/           # 教程和指南
-├── algorithms/          # 算法详细说明
-├── examples/           # 示例代码
-└── images/             # 文档图片
+├── api/                 # API reference documentation
+├── tutorials/           # Tutorials and guides
+├── algorithms/          # Algorithm detailed descriptions
+├── examples/           # Example code
+└── images/             # Documentation images
 ```
 
-### 文档编写规范
+### Documentation Writing Standards
 
-1. **使用Markdown格式**
-2. **包含代码示例**
-3. **添加适当的图片和图表**
-4. **保持内容更新**
+1. **Use Markdown format**
+2. **Include code examples**
+3. **Add appropriate images and diagrams**
+4. **Keep content updated**
 
-### 构建文档
+### Building Documentation
 
 ```bash
-# 安装文档依赖
+# Install documentation dependencies
 pip install -e .[docs]
 
-# 构建HTML文档
+# Build HTML documentation
 cd docs/
 make html
 
-# 启动本地文档服务器
+# Start local documentation server
 python -m http.server 8000 -d _build/html/
 ```
 
-## 🐛 问题报告
+## 🐛 Issue Reporting
 
-### Bug报告模板
+### Bug Report Template
 
-使用GitHub Issues模板报告问题：
+Use GitHub Issues template to report problems:
 
 ```markdown
-**Bug描述**
-简洁清晰地描述bug。
+**Bug Description**
+A clear and concise description of the bug.
 
-**复现步骤**
-1. 运行命令 '...'
-2. 点击按钮 '....'
-3. 查看错误 '....'
+**Steps to Reproduce**
+1. Run command '...'
+2. Click button '....'
+3. See error '....'
 
-**预期行为**
-描述您期望发生的行为。
+**Expected Behavior**
+Describe what you expected to happen.
 
-**实际行为**
-描述实际发生的行为。
+**Actual Behavior**
+Describe what actually happened.
 
-**环境信息**
+**Environment Information**
 - OS: [e.g. macOS 12.6]
-- Python版本: [e.g. 3.9.7]
-- 系统版本: [e.g. 1.0.0]
+- Python Version: [e.g. 3.9.7]
+- System Version: [e.g. 1.0.0]
 
-**附加信息**
-- 错误日志
-- 配置文件
-- 测试数据
+**Additional Information**
+- Error logs
+- Configuration files
+- Test data
 ```
 
-### 功能请求模板
+### Feature Request Template
 
 ```markdown
-**功能描述**
-简洁清晰地描述您希望的功能。
+**Feature Description**
+A clear and concise description of the feature you want.
 
-**问题背景**
-描述这个功能要解决的问题。
+**Problem Background**
+Describe the problem this feature would solve.
 
-**建议的解决方案**
-描述您认为可行的解决方案。
+**Suggested Solution**
+Describe your proposed solution.
 
-**替代方案**
-描述您考虑过的其他解决方案。
+**Alternative Solutions**
+Describe other solutions you've considered.
 
-**附加信息**
-添加任何其他相关信息或截图。
+**Additional Information**
+Add any other relevant information or screenshots.
 ```
 
-## 🏆 贡献者认可
+## 🏆 Contributor Recognition
 
-我们重视每一个贡献，并通过以下方式认可贡献者：
+We value every contribution and recognize contributors through:
 
-### 贡献者类型
+### Contributor Types
 
-- **核心维护者** - 长期维护项目的开发者
-- **代码贡献者** - 提交代码的开发者
-- **文档贡献者** - 改进文档的贡献者
-- **测试贡献者** - 提供测试和质量保证的贡献者
-- **社区支持者** - 帮助其他用户的贡献者
+- **Core Maintainers** - Long-term project maintainers
+- **Code Contributors** - Developers who submit code
+- **Documentation Contributors** - Contributors who improve documentation
+- **Test Contributors** - Contributors who provide testing and QA
+- **Community Supporters** - Contributors who help other users
 
-### 认可方式
+### Recognition Methods
 
-1. **README贡献者列表**
-2. **发布说明中的致谢**
-3. **GitHub贡献者徽章**
-4. **学术论文中的致谢**
+1. **README contributor list**
+2. **Release notes acknowledgments**
+3. **GitHub contributor badges**
+4. **Academic paper acknowledgments**
 
-## 📜 社区准则
+## 📜 Community Guidelines
 
-### 行为准则
+### Code of Conduct
 
-我们采用 [Contributor Covenant](https://www.contributor-covenant.org/) 行为准则：
+We adopt the [Contributor Covenant](https://www.contributor-covenant.org/) code of conduct:
 
-- **友好包容** - 欢迎不同背景的贡献者
-- **尊重他人** - 尊重不同的观点和经验
-- **建设性反馈** - 提供有帮助的、建设性的反馈
-- **专业态度** - 保持专业和礼貌的交流
+- **Friendly and Inclusive** - Welcome contributors from all backgrounds
+- **Respect Others** - Respect different viewpoints and experiences
+- **Constructive Feedback** - Provide helpful, constructive feedback
+- **Professional Attitude** - Maintain professional and courteous communication
 
-### 学术诚信
+### Academic Integrity
 
-由于本项目涉及网络安全研究：
+Since this project involves cybersecurity research:
 
-- **负责任披露** - 发现的安全问题应负责任地披露
-- **研究用途** - 确保研究成果用于防御性目的
-- **引用规范** - 正确引用相关研究和数据来源
-- **伦理考量** - 遵守研究伦理和法律法规
+- **Responsible Disclosure** - Responsibly disclose discovered security issues
+- **Research Use** - Ensure research results are used for defensive purposes
+- **Citation Standards** - Properly cite relevant research and data sources
+- **Ethical Considerations** - Follow research ethics and legal regulations
 
-## 📧 联系方式
+## 📧 Contact
 
-如有任何问题或需要帮助：
+If you have any questions or need help:
 
-- **GitHub Issues**: [报告问题](https://github.com/jasontimwong/ais-attack-system/issues)
-- **GitHub Discussions**: [参与讨论](https://github.com/jasontimwong/ais-attack-system/discussions)
-- **邮件**: jason@example.com
+- **GitHub Issues**: [Report Issues](https://github.com/jasontimwong/ais-attack-system/issues)
+- **GitHub Discussions**: [Join Discussions](https://github.com/jasontimwong/ais-attack-system/discussions)
+- **Email**: jason@example.com
 
 ---
 
-感谢您对AIS攻击生成系统的贡献！您的参与将推动海事网络安全研究的发展。 🚢⚓
+Thank you for contributing to the AIS Attack Generation System! Your participation will advance maritime cybersecurity research. 🚢⚓
