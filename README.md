@@ -201,18 +201,6 @@ We welcome community contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- Thanks to the maritime cybersecurity research community for support
-- Validated using real AIS datasets
-- Compliant with IMO International Maritime Organization standards
-
-## 📧 Contact
-
-- **Author**: Jason Tim Wong
-- **GitHub**: [@jasontimwong](https://github.com/jasontimwong)
-- **Project Link**: [https://github.com/jasontimwong/ais-attack-system](https://github.com/jasontimwong/ais-attack-system)
-
 ---
 
 **⚠️ Disclaimer**: This system is intended solely for academic research and defensive security evaluation. Do not use for any malicious purposes.
