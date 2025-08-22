@@ -1,0 +1,63 @@
+# S3 Ghost Swarm Attack Validation Configuration
+# Uses real NOAA data for regression testing
+
+scenario: "s3_ghostswarm"
+attack_type: "ghost_swarm"
+
+# Time window for attack
+time_window:
+  start: "2020-01-01T08:00:00Z"
+  end: "2020-01-01T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "ghost_swarm"
+    name: "Ghost Fishing Fleet"
+    window: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+    
+    params:
+      # Swarm configuration
+      swarm_config:
+        size: 8                    # Number of ghost vessels
+        area_radius: 2.0           # Activity radius in nautical miles
+        min_separation: 0.15       # Minimum separation between vessels
+      
+      # Motion parameters
+      motion_config:
+        base_speed: 4.5            # Base speed in knots
+        speed_variation: 1.5       # Speed variation range
+        heading_variation: 45.0    # Heading variation in degrees
+        update_interval: 45        # Position update interval in seconds
+      
+      # Timing parameters
+      timing_config:
+        appearance_duration: 2400  # 40 minutes visible
+        disappearance_duration: 1200  # 20 minutes hidden
+        sync_probability: 0.75     # Synchronization probability
+      
+      # Center position (adjust based on NOAA data coverage)
+      center_position:
+        lat: 30.8
+        lon: -88.5  # Gulf of Mexico area with good AIS coverage
+
+# Data loader configuration
+data_loader:
+  time_range: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 1000
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_ghost_vessels: 6
+  max_ghost_vessels: 10
+  
+# Logging
+logging:
+  level: "INFO"

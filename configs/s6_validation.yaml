@@ -1,0 +1,57 @@
+# S6 Course Disruption Attack Validation Configuration
+# Uses real NOAA data for regression testing
+
+scenario: "s6_course_disruption"
+attack_type: "course_disruption"
+
+# Time window for attack
+time_window:
+  start: "2020-01-01T08:00:00Z"
+  end: "2020-01-01T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "course_disruption"
+    name: "Course/Speed Disruption"
+    window: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+    
+    params:
+      # Disruption parameters
+      cog_disruption_range: 15.0        # COG variation range (degrees)
+      sog_disruption_ratio: 0.15        # SOG variation (15% of current speed)
+      phase_duration: 1800              # Duration per phase (30 minutes)
+      intensity_ramp_time: 300          # Ramp up time (5 minutes)
+      
+      # Pattern configuration
+      disruption_pattern: "oscillation"  # Type: oscillation, random, drift
+      frequency_variation: 0.3          # Frequency variation factor
+      
+      # Target configuration
+      target_probability: 0.3           # Probability of disrupting a vessel
+      max_targets: 10                   # Maximum vessels to disrupt
+      min_vessel_speed: 5.0            # Only disrupt vessels moving > 5 knots
+      
+      # Physical constraints
+      max_cog_change_rate: 3.0         # Max COG change per minute (degrees)
+      max_sog_change_rate: 2.0         # Max SOG change per minute (knots)
+      
+# Data loader configuration
+data_loader:
+  time_range: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 0
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_disrupted_vessels: 1
+  
+# Logging
+logging:
+  level: "INFO"

@@ -1,0 +1,70 @@
+# S5 Port Spoofing Attack Validation Configuration
+# Uses real NOAA data for regression testing
+
+scenario: "s5_port_spoofing"
+attack_type: "port_spoofing"
+
+# Time window for attack
+time_window:
+  start: "2020-01-01T08:00:00Z"
+  end: "2020-01-01T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "port_spoofing"
+    name: "Embargo Port Docking Concealment"
+    window: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+    
+    params:
+      # Target vessel (will be set dynamically)
+      target_mmsi: null
+      
+      # Embargo ports configuration (as list)
+      embargo_ports:
+        - name: "EMBARGO_PORT"
+          lat: 30.7
+          lon: -88.1
+          radius: 5.0  # in nautical miles
+      
+      # Docking detection parameters
+      min_docking_time: 600      # 10 minutes minimum docking time
+      speed_threshold: 3.0       # Speed threshold for docking detection
+      spoofing_distance: 10.0    # Distance to spoof away from port (nm)
+      
+      # Spoofing parameters
+      spoofing_zone:
+        lat: 30.5
+        lon: -88.8
+        radius_nm: 10.0
+      
+      # Trajectory parameters
+      approach_speed: 8.0        # Speed when approaching port
+      docking_speed: 2.0         # Speed when docking
+      trajectory_smoothness: 0.8 # Bezier curve smoothness
+      
+      # Timing
+      pre_approach_time: 1800    # Time before port approach (seconds)
+      docking_duration: 900      # Time spent at port (seconds)
+      post_departure_time: 1800  # Time after departure (seconds)
+
+# Data loader configuration
+data_loader:
+  time_range: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 0
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_spoofed_vessels: 1
+  max_spoofed_vessels: 5
+  
+# Logging
+logging:
+  level: "INFO"

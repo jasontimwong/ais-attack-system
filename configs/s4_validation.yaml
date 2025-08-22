@@ -1,0 +1,53 @@
+# S4 Position Offset Attack Validation Configuration
+# Uses real NOAA data for regression testing
+
+scenario: "s4_position_offset"
+attack_type: "position_offset"
+
+# Time window for attack
+time_window:
+  start: "2020-01-01T08:00:00Z"
+  end: "2020-01-01T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "position_offset"
+    name: "Dynamic Position Offset"
+    window: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+    
+    params:
+      # Offset parameters
+      offset_nm: 0.5              # Initial offset distance
+      offset_growth_rate: 0.1     # Growth rate per minute
+      max_offset_nm: 2.0          # Maximum offset distance
+      
+      # Trigger conditions
+      trigger_distance: 1.5       # Trigger when vessels within 3 nm
+      safety_threshold: 0.3       # CPA threshold for activation
+      attack_duration: 600        # Attack duration in seconds
+      
+      # Enable synthetic pairs\n      enable_synthetic_pairs: true\n      \n      # Enable synthetic pairs\n      enable_synthetic_pairs: true\n      \n      # Enable synthetic pairs\n      enable_synthetic_pairs: true\n      \n      # Pattern parameters
+      pattern_type: "smooth"      # smooth, oscillating, random
+      update_interval: 30         # Update interval in seconds
+
+# Data loader configuration
+data_loader:
+  time_range: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 0
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_modified_vessels: 1
+  max_modified_vessels: 20
+  
+# Logging
+logging:
+  level: "INFO"

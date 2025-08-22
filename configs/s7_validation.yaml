@@ -1,0 +1,63 @@
+# S7 Identity Swap Attack Validation Configuration
+# Uses test scenario for regression testing
+
+scenario: "s7_identity_swap"
+attack_type: "identity_swap"
+
+# Time window for attack
+time_window:
+  start: "2024-03-15T08:00:00Z"
+  end: "2024-03-15T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "identity_swap"
+    name: "AIS Identity Swap"
+    window: ["2024-03-15T08:00:00Z", "2024-03-15T10:00:00Z"]
+    
+    params:
+      # Swap configuration
+      max_cpa_distance: 2.0              # Maximum CPA for swap (nm)
+      min_vessel_similarity: 0.5         # Minimum similarity score
+      swap_trigger_distance: 1.5         # Distance to trigger swap (nm)
+      swap_duration: 3600                # Swap duration (1 hour)
+      
+      # Vessel similarity criteria
+      type_match_weight: 0.4             # Weight for vessel type match
+      size_match_weight: 0.3             # Weight for size similarity
+      speed_match_weight: 0.3            # Weight for speed similarity
+      
+      # Size tolerance
+      length_tolerance: 50               # Length difference tolerance (meters)
+      width_tolerance: 10                # Width difference tolerance (meters)
+      
+      # Speed tolerance  
+      speed_tolerance: 5.0               # Speed difference tolerance (knots)
+      
+      # Swap behavior
+      gradual_transition: true           # Gradual identity transition
+      transition_time: 300               # Transition period (5 minutes)
+      
+      # Safety constraints
+      min_distance_to_others: 5.0        # Min distance to other vessels (nm)
+      
+# Data loader configuration
+data_loader:
+  time_range: ["2024-03-15T08:00:00Z", "2024-03-15T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 0
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_swapped_vessels: 2
+  
+# Logging
+logging:
+  level: "INFO"

@@ -1,0 +1,65 @@
+# Default configuration values for AIS attack generation
+# These can be overridden in specific scenario files
+
+# Attack parameter defaults
+attack_defaults:
+  # Speed limits
+  max_vessel_speed_kn: 20.0
+  min_vessel_speed_kn: 0.0
+  
+  # CPA thresholds
+  cpa_threshold_nm: 0.05
+  tcpa_threshold_min: 5
+  
+  # Message intervals
+  min_msg_interval_sec: 1
+  max_msg_interval_sec: 3
+  default_msg_interval_sec: 2
+  
+  # Cross angles
+  min_cross_angle_deg: 90
+  max_cross_angle_deg: 150
+  default_cross_angle_deg: 110
+  
+  # Silence period
+  default_silence_sec: 30
+  
+  # Initial positioning
+  default_initial_offset_nm: 0.05
+  min_initial_offset_nm: 0.03
+  max_initial_offset_nm: 0.1
+
+# Validation thresholds
+validation_thresholds:
+  min_target_records: 120
+  min_ghost_messages: 150
+  min_missing_messages: 15  # For silence period
+  max_cpa_nm: 0.05
+  min_cross_angle_deg: 100
+  max_ghost_speed_kn: 20.0
+
+# Auto target scanning parameters
+auto_target_defaults:
+  vessel_types: [70, 71, 72, 73, 74]  # Cargo vessels
+  window_length_min: 20
+  min_neighbors: 5
+  min_target_records: 240
+  search_radius_deg: 0.1  # Search box size
+
+# Impact simulation defaults
+impact_defaults:
+  cascade_levels: 2
+  cpa_reaction_threshold_nm: 0.5
+  tcpa_reaction_threshold_min: 12
+  emergency_turn_deg: 30
+  speed_reduction_percent: 20
+  turn_rate_deg_per_min: 3.0
+
+# Output format defaults
+output_defaults:
+  baseline_filename: "baseline.csv"
+  attack_filename: "attack.csv"
+  impact_filename: "impact.csv"
+  diff_filename: "diff.json"
+  impact_events_filename: "impact_events.json"
+  effectiveness_filename: "attack_effectiveness.json"

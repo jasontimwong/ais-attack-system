@@ -1,0 +1,52 @@
+# S9 Identity Whitewashing Attack Validation Configuration
+# Uses real NOAA data for regression testing
+
+scenario: "s9_identity_whitewashing"
+attack_type: "identity_whitewashing"
+
+# Time window for attack
+time_window:
+  start: "2020-01-01T08:00:00Z"
+  end: "2020-01-01T10:00:00Z"  # 2 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "identity_whitewashing"
+    name: "Vessel Identity Whitewashing"
+    window: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+    
+    params:
+      # Whitewashing parameters
+      whitewash_interval: 1800        # Change identity every 30 minutes
+      location_based: false           # Time-based changes
+      change_vessel_type: true        # Also change vessel type
+      identity_pool_size: 5           # Number of identities to cycle through
+      
+      # Target selection
+      target_vessels_ratio: 0.2       # Target 20% of vessels
+      min_vessel_speed: 5.0          # Only target moving vessels
+      
+      # Identity generation
+      mmsi_prefix: "999"             # Prefix for new MMSIs
+      name_prefix: "CLEAN_"          # Prefix for whitewashed names
+
+# Data loader configuration
+data_loader:
+  time_range: ["2020-01-01T08:00:00Z", "2020-01-01T10:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 500
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_whitewashed_vessels: 1
+  
+# Logging
+logging:
+  level: "INFO"

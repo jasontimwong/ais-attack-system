@@ -1,0 +1,13 @@
+attack_config:
+  approach_angle_deg: 45.0
+  cpa_threshold_nm: 0.15
+  ghost_speed_kn: 8.0
+  window_minutes: 10.0
+attack_type: false_target_v4
+scenario: s1_test_demo
+target_selection:
+  min_messages: 10
+  mmsi: 367556250
+time_window:
+  end: '2020-01-01T02:00:00Z'
+  start: '2020-01-01T01:30:00Z'

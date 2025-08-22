@@ -1,0 +1,66 @@
+# S8 Identity Clone Attack Validation Configuration
+# Uses NOAA sample data for regression testing
+
+scenario: "s8_identity_clone"
+attack_type: "identity_clone"
+
+# Time window for attack
+time_window:
+  start: "2024-03-15T08:00:00Z"
+  end: "2024-03-15T09:00:00Z"  # 1 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "identity_clone"
+    name: "Identity Clone Attack"
+    window: ["2024-03-15T08:00:00Z", "2024-03-15T09:00:00Z"]
+    
+    params:
+      # Clone configuration
+      num_clones: 3                        # Number of clones per vessel
+      target_vessels_ratio: 0.2            # Clone 20% of vessels
+      min_vessel_speed: 5.0                # Only clone moving vessels
+      
+      # Clone behavior
+      clone_activation_delay: 0            # Delay before clones appear (immediate)
+      clone_lifetime: 3600                 # Clone lifetime (60 min)
+      simultaneous_transmissions: true     # Allow simultaneous AIS messages
+      
+      # Spatial distribution
+      dispersion_pattern: "radial"         # radial, linear, random
+      min_separation_distance: 10.0        # Min distance between clones (nm)
+      max_separation_distance: 50.0        # Max distance between clones (nm)
+      
+      # Movement patterns
+      movement_correlation: 0.7            # How closely clones follow parent
+      speed_variation: 0.2                 # Speed variation factor
+      course_variation: 30.0               # Course variation (degrees)
+      
+      # Transmission patterns
+      transmission_jitter: 60              # Time jitter in seconds
+      signal_strength_variation: true      # Vary signal strength
+      
+      # Identity parameters
+      maintain_static_data: true           # Keep vessel name, type etc
+      randomize_voyage_data: false         # Keep destination, ETA etc
+      
+# Data loader configuration
+data_loader:
+  time_range: ["2024-03-15T08:00:00Z", "2024-03-15T09:00:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements
+validation:
+  max_nan_allowed: 1000
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_cloned_vessels: 1
+  
+# Logging
+logging:
+  level: "INFO"

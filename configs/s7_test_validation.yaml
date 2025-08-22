@@ -1,0 +1,49 @@
+# S7 TEST MODE Validation Configuration
+scenario: "s7_identity_swap_test"
+attack_type: "identity_swap"
+
+# Time window for attack
+time_window:
+  start: "2024-03-15T08:00:00Z"
+  end: "2024-03-15T08:59:00Z"  # 1 hour window
+
+# Attack scenarios
+attack_scenarios:
+  - type: "identity_swap"
+    name: "AIS Identity Swap Test"
+    window: ["2024-03-15T08:00:00Z", "2024-03-15T08:59:00Z"]
+    
+    params:
+      # TEST_MODE compatible parameters
+      swap_trigger_distance: 1.5      # 触发距离(海里)
+      swap_duration: 60              # 交换持续时间(60秒 for TEST_MODE)
+      min_similarity_score: 0.3      # 最小相似度(降低for TEST_MODE)
+      analysis_interval: 10          # 分析间隔(10秒 for TEST_MODE)
+      max_active_swaps: 3            # 最大并发交换数
+
+      # 目标筛选参数
+      target_vessel_types: [70]      # 只针对货船
+      min_speed: 5.0                 # 最小速度(节)
+      max_speed: 20.0                # 最大速度(节)
+      vessel_type_tolerance: 10      # 船型差异容忍度
+
+# Data loader configuration
+data_loader:
+  time_range: ["2024-03-15T08:00:00Z", "2024-03-15T08:59:00Z"]
+  
+# Output configuration
+output:
+  baseline: "baseline.csv"
+  attack: "attack.csv"
+  diff: "diff.json"
+  
+# Validation requirements (relaxed for TEST_MODE)
+validation:
+  max_nan_allowed: 100
+  max_invalid_coords: 0
+  max_excessive_speed: 0
+  min_swapped_vessels: 1     # 至少1次交换
+
+# Logging
+logging:
+  level: "INFO"
